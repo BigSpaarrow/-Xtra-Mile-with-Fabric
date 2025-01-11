@@ -1,0 +1,202 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "Copy",
+        "typeProperties": {
+          "source": {
+            "type": "SqlServerSource",
+            "partitionOption": "None",
+            "queryTimeout": "02:00:00",
+            "datasetSettings": {
+              "type": "SqlServerTable",
+              "typeProperties": {
+                "schema": "dbo",
+                "table": "Adv_Works_Product Lookup",
+                "database": "PBI_DATA"
+              },
+              "schema": [],
+              "externalReferences": {
+                "connection": "dc71a928-5ef3-4397-a48b-ebc1162ed0aa"
+              },
+              "annotations": []
+            }
+          },
+          "sink": {
+            "type": "LakehouseTableSink",
+            "tableActionOption": "OverwriteSchema",
+            "partitionOption": "None",
+            "datasetSettings": {
+              "type": "LakehouseTable",
+              "typeProperties": {
+                "table": "Product"
+              },
+              "schema": [],
+              "linkedService": {
+                "name": "Adventures_Lakehouse",
+                "properties": {
+                  "type": "Lakehouse",
+                  "typeProperties": {
+                    "artifactId": "27bec1c4-5ffb-4276-9a98-36863bdd1a4d",
+                    "workspaceId": "00000000-0000-0000-0000-000000000000",
+                    "rootFolder": "Tables"
+                  },
+                  "annotations": []
+                }
+              },
+              "annotations": []
+            }
+          },
+          "translator": {
+            "type": "TabularTranslator",
+            "mappings": [
+              {
+                "source": {
+                  "name": "ProductKey",
+                  "type": "Int16",
+                  "physicalType": "smallint"
+                },
+                "sink": {
+                  "name": "ProductKey",
+                  "physicalType": "short"
+                }
+              },
+              {
+                "source": {
+                  "name": "ProductSubcategoryKey",
+                  "type": "Byte",
+                  "physicalType": "tinyint"
+                },
+                "sink": {
+                  "name": "ProductSubcategoryKey",
+                  "physicalType": "short"
+                }
+              },
+              {
+                "source": {
+                  "name": "ProductSKU",
+                  "type": "String",
+                  "physicalType": "nvarchar",
+                  "length": "50"
+                },
+                "sink": {
+                  "name": "ProductSKU",
+                  "physicalType": "string"
+                }
+              },
+              {
+                "source": {
+                  "name": "ProductName",
+                  "type": "String",
+                  "physicalType": "nvarchar",
+                  "length": "50"
+                },
+                "sink": {
+                  "name": "ProductName",
+                  "physicalType": "string"
+                }
+              },
+              {
+                "source": {
+                  "name": "ModelName",
+                  "type": "String",
+                  "physicalType": "nvarchar",
+                  "length": "50"
+                },
+                "sink": {
+                  "name": "ModelName",
+                  "physicalType": "string"
+                }
+              },
+              {
+                "source": {
+                  "name": "ProductDescription",
+                  "type": "String",
+                  "physicalType": "nvarchar",
+                  "length": "250"
+                },
+                "sink": {
+                  "name": "ProductDescription",
+                  "physicalType": "string"
+                }
+              },
+              {
+                "source": {
+                  "name": "ProductColor",
+                  "type": "String",
+                  "physicalType": "nvarchar",
+                  "length": "50"
+                },
+                "sink": {
+                  "name": "ProductColor",
+                  "physicalType": "string"
+                }
+              },
+              {
+                "source": {
+                  "name": "ProductSize",
+                  "type": "String",
+                  "physicalType": "nvarchar",
+                  "length": "50"
+                },
+                "sink": {
+                  "name": "ProductSize",
+                  "physicalType": "string"
+                }
+              },
+              {
+                "source": {
+                  "name": "ProductStyle",
+                  "type": "String",
+                  "physicalType": "nvarchar",
+                  "length": "50"
+                },
+                "sink": {
+                  "name": "ProductStyle",
+                  "physicalType": "string"
+                }
+              },
+              {
+                "source": {
+                  "name": "ProductCost",
+                  "type": "Double",
+                  "physicalType": "float"
+                },
+                "sink": {
+                  "name": "ProductCost",
+                  "physicalType": "double"
+                }
+              },
+              {
+                "source": {
+                  "name": "ProductPrice",
+                  "type": "Double",
+                  "physicalType": "float"
+                },
+                "sink": {
+                  "name": "ProductPrice",
+                  "physicalType": "double"
+                }
+              }
+            ],
+            "typeConversion": true,
+            "typeConversionSettings": {
+              "allowDataTruncation": true,
+              "treatBooleanAsNumber": false
+            }
+          },
+          "enableStaging": false
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Extract Product",
+        "dependsOn": []
+      }
+    ]
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "DataPipeline",
+    "displayName": "PL_Trigger_Adv_Works_Data_Loads_V1"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "16c86f43-e15e-4295-89a9-8d8a91b2f77b"
+  }
+}

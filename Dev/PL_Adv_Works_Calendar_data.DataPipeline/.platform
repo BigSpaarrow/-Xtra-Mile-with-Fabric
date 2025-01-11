@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "DataPipeline",
+    "displayName": "PL_Adv_Works_Calendar_data"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "21831e3a-a94e-42f8-8b92-6d38d113eab0"
+  }
+}

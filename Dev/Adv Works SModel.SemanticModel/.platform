@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "Adv Works SModel"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "1c97ac21-4ea0-4ee8-94d2-74b9f8576fb9"
+  }
+}

@@ -1,0 +1,179 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "21831e3a-a94e-42f8-8b92-6d38d113eab0",
+            "type": "PipelineReference"
+          },
+          "parameters": {},
+          "waitOnCompletion": true
+        },
+        "policy": {
+          "secureInput": false
+        },
+        "name": "Exe_Calendar-data",
+        "dependsOn": []
+      },
+      {
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "f3b007c3-8f39-4621-a3e1-ca15026a616a",
+            "type": "PipelineReference"
+          },
+          "parameters": {},
+          "waitOnCompletion": true
+        },
+        "policy": {
+          "secureInput": false
+        },
+        "name": "Exe_Territory_data",
+        "dependsOn": [
+          {
+            "activity": "Exe_Calendar-data",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "150e0a30-da23-4f71-812a-aa8f5b5edad7",
+            "type": "PipelineReference"
+          },
+          "parameters": {},
+          "waitOnCompletion": true
+        },
+        "policy": {
+          "secureInput": false
+        },
+        "name": "Exe_Customer_data",
+        "dependsOn": [
+          {
+            "activity": "Exe_Territory_data",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "4653fc2d-5fcc-4427-9f9b-b58e3e40d7f3",
+            "type": "PipelineReference"
+          },
+          "parameters": {},
+          "waitOnCompletion": true
+        },
+        "policy": {
+          "secureInput": false
+        },
+        "name": "Exe_Prod_Cat_data",
+        "dependsOn": [
+          {
+            "activity": "Exe_Customer_data",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "199f2585-c6b6-49ce-8a1c-26726abe1bba",
+            "type": "PipelineReference"
+          },
+          "parameters": {},
+          "waitOnCompletion": true
+        },
+        "policy": {
+          "secureInput": false
+        },
+        "name": "Exe_Product_data",
+        "dependsOn": [
+          {
+            "activity": "Exe_Prod_Cat_data",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "84be78fe-28b6-49e1-b23e-d642fb5b8757",
+            "type": "PipelineReference"
+          },
+          "parameters": {},
+          "waitOnCompletion": true
+        },
+        "policy": {
+          "secureInput": false
+        },
+        "name": "Exe_Returs_data",
+        "dependsOn": [
+          {
+            "activity": "Exe_Product_data",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "ExecutePipeline",
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "cbaf268d-9041-4275-a052-5485dcf9aa43",
+            "type": "PipelineReference"
+          },
+          "parameters": {},
+          "waitOnCompletion": true
+        },
+        "policy": {
+          "secureInput": false
+        },
+        "name": "Exe_Sales_data",
+        "dependsOn": [
+          {
+            "activity": "Exe_Returs_data",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Fail",
+        "typeProperties": {
+          "message": "Adventure Works Calendar Extract Failed",
+          "errorCode": {
+            "value": "@activity('Exe_Calendar-data').output.pipelineReturnValue",
+            "type": "Expression"
+          }
+        },
+        "name": "Adventure Works Calendar Extract Failed",
+        "dependsOn": [
+          {
+            "activity": "Exe_Calendar-data",
+            "dependencyConditions": [
+              "Failed"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
