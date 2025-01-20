@@ -1,0 +1,123 @@
+table Calendar
+	lineageTag: edbfcec5-ccd9-403f-b083-f2f012ecb1d1
+
+	column date
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: b9d1af0f-2ff1-4385-bd78-1bd5bc674607
+		summarizeBy: none
+		sourceColumn: date
+
+		variation Variation
+			isDefault
+			relationship: eb6192b4-0490-4a26-8c1a-9e8269f8906b
+			defaultHierarchy: LocalDateTable_5e7a5515-4b80-44e5-9111-5fd1a8750ac6.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Start of Week'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: a17c42ea-5b12-48b3-b099-37dd4456eeaa
+		summarizeBy: none
+		sourceColumn: Start of Week
+
+		variation Variation
+			isDefault
+			relationship: db469736-4c47-4493-a932-8f8cfdf63710
+			defaultHierarchy: LocalDateTable_cd3e2cce-a9f7-406f-8fdb-0cd4752c8056.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Day Name'
+		dataType: string
+		lineageTag: 3e687d65-1b35-4116-b755-d8e5a40794e1
+		summarizeBy: none
+		sourceColumn: Day Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Start of Month'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: bc1fb794-a8d4-4f40-9d48-f80641ca27ba
+		summarizeBy: none
+		sourceColumn: Start of Month
+
+		variation Variation
+			isDefault
+			relationship: b7c9200a-6077-4a52-a15d-a1843feab060
+			defaultHierarchy: LocalDateTable_b77b2409-183c-4664-bd89-d9c2e09ca384.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Month Name'
+		dataType: string
+		lineageTag: b50f2f72-827f-4e58-99fc-dec2588dc3ba
+		summarizeBy: none
+		sourceColumn: Month Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quarter
+		dataType: int64
+		formatString: 0
+		lineageTag: c8f4b488-c2db-4f94-9587-940cdf96c987
+		summarizeBy: sum
+		sourceColumn: Quarter
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year
+		dataType: int64
+		formatString: 0
+		lineageTag: fa0cf132-d1df-490f-9af0-37d779b4a49d
+		summarizeBy: sum
+		sourceColumn: Year
+
+		annotation SummarizationSetBy = Automatic
+
+	column Weekend = IF('Calendar'[Day Name] IN { "Saturday" , "Sunday"}, "Y", "N")
+		lineageTag: 3cd70f1e-a5ba-4154-926b-3f99b1480de6
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'End of Month' = ENDOFMONTH('Calendar'[date].[Date])
+		formatString: Short Date
+		lineageTag: 97aadd6f-feb1-40c6-a34c-084866dec97f
+		summarizeBy: none
+
+		variation Variation
+			isDefault
+			relationship: 1afe622d-b521-4ec4-a478-f00cd045fae9
+			defaultHierarchy: LocalDateTable_2ed02f4d-dc09-4887-bb8d-0fca66971688.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Calendar = m
+		mode: import
+		source =
+				let
+				    Source = PowerPlatform.Dataflows(null),
+				    Workspaces = Source{[Id="Workspaces"]}[Data],
+				    #"2fdbc029-4dea-496a-a0bc-c32c1f4c2d24" = Workspaces{[workspaceId="2fdbc029-4dea-496a-a0bc-c32c1f4c2d24"]}[Data],
+				    #"142eaa63-2e54-43a9-aac7-d21e5341fcd7" = #"2fdbc029-4dea-496a-a0bc-c32c1f4c2d24"{[dataflowId="142eaa63-2e54-43a9-aac7-d21e5341fcd7"]}[Data],
+				    MavenMarket_Calendar_ = #"142eaa63-2e54-43a9-aac7-d21e5341fcd7"{[entity="MavenMarket_Calendar",version=""]}[Data],
+				    #"Inserted Start of Week" = Table.AddColumn(MavenMarket_Calendar_, "Start of Week", each Date.StartOfWeek([date]), type date),
+				    #"Inserted Day Name" = Table.AddColumn(#"Inserted Start of Week", "Day Name", each Date.DayOfWeekName([date]), type text),
+				    #"Inserted Start of Month" = Table.AddColumn(#"Inserted Day Name", "Start of Month", each Date.StartOfMonth([date]), type date),
+				    #"Inserted Month Name" = Table.AddColumn(#"Inserted Start of Month", "Month Name", each Date.MonthName([date]), type text),
+				    #"Inserted Quarter" = Table.AddColumn(#"Inserted Month Name", "Quarter", each Date.QuarterOfYear([date]), Int64.Type),
+				    #"Inserted Year" = Table.AddColumn(#"Inserted Quarter", "Year", each Date.Year([date]), Int64.Type)
+				in
+				    #"Inserted Year"
+
+	annotation PBI_ResultType = Table
+

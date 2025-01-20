@@ -1,0 +1,59 @@
+table Returns
+	lineageTag: 6878090d-c360-4299-a569-6985082c5943
+
+	column return_date
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 68f6792b-6e9c-4b19-9928-a7ca69bd95aa
+		summarizeBy: none
+		sourceColumn: return_date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column product_id
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 5f27dd36-f5fa-4059-ae2e-de2ced5349a3
+		summarizeBy: none
+		sourceColumn: product_id
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column store_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 231cabd5-dc2f-4183-a4f4-5c80393d234a
+		summarizeBy: none
+		sourceColumn: store_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column quantity
+		dataType: int64
+		formatString: 0
+		lineageTag: 40bb634a-b8d5-4126-aaee-bdf9a71718e9
+		summarizeBy: sum
+		sourceColumn: quantity
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Returns = m
+		mode: import
+		source =
+				let
+				    Source = PowerPlatform.Dataflows(null),
+				    Workspaces = Source{[Id="Workspaces"]}[Data],
+				    #"2fdbc029-4dea-496a-a0bc-c32c1f4c2d24" = Workspaces{[workspaceId="2fdbc029-4dea-496a-a0bc-c32c1f4c2d24"]}[Data],
+				    #"142eaa63-2e54-43a9-aac7-d21e5341fcd7" = #"2fdbc029-4dea-496a-a0bc-c32c1f4c2d24"{[dataflowId="142eaa63-2e54-43a9-aac7-d21e5341fcd7"]}[Data],
+				    MavenMarket_Returns_ = #"142eaa63-2e54-43a9-aac7-d21e5341fcd7"{[entity="MavenMarket_Returns",version=""]}[Data],
+				    #"Changed Type" = Table.TransformColumnTypes(MavenMarket_Returns_,{{"product_id", Int64.Type}, {"store_id", Int64.Type}, {"quantity", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,62 @@
+relationship eb6192b4-0490-4a26-8c1a-9e8269f8906b
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Calendar.date
+	toColumn: LocalDateTable_5e7a5515-4b80-44e5-9111-5fd1a8750ac6.Date
+
+relationship 1ff47a09-a9f6-4934-a1f8-3f0b09735938
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Customers.birthdate
+	toColumn: LocalDateTable_4e0d43ec-2eec-427f-a85a-8fd9d1c2376c.Date
+
+relationship 77bed62a-6c3a-4c6d-9897-c550dc9c6597
+	fromColumn: Transactions.customer_id
+	toColumn: Customers.customer_id
+
+relationship 52691c9b-3aef-4bf9-a96e-6bd73ff09bdf
+	fromColumn: Returns.product_id
+	toColumn: Products.product_id
+
+relationship 3d9a2f48-48f3-4ec1-b5ca-b331165d2ea9
+	fromColumn: Transactions.product_id
+	toColumn: Products.product_id
+
+relationship cc2dc9e1-f3d6-4eb1-8db0-dc27615acc7a
+	fromColumn: Stores.region_id
+	toColumn: Regions.region_id
+
+relationship 98808adc-891a-48cf-9027-281b19ba52c6
+	fromColumn: Returns.store_id
+	toColumn: Stores.store_id
+
+relationship d4ad69fa-033f-487a-8db0-3b98e3a7e156
+	fromColumn: Transactions.store_id
+	toColumn: Stores.store_id
+
+relationship db469736-4c47-4493-a932-8f8cfdf63710
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Calendar.'Start of Week'
+	toColumn: LocalDateTable_cd3e2cce-a9f7-406f-8fdb-0cd4752c8056.Date
+
+relationship b7c9200a-6077-4a52-a15d-a1843feab060
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Calendar.'Start of Month'
+	toColumn: LocalDateTable_b77b2409-183c-4664-bd89-d9c2e09ca384.Date
+
+relationship 20251342-9ea3-4c77-a3f7-df959109d72f
+	fromColumn: Transactions.transaction_date
+	toColumn: Calendar.date
+
+relationship b2841292-09ac-45f7-9bdb-de6a8a74a73d
+	isActive: false
+	fromColumn: Transactions.stock_date
+	toColumn: Calendar.date
+
+relationship 3306a855-2938-42f7-9761-0e20823f37fe
+	fromColumn: Returns.return_date
+	toColumn: Calendar.date
+
+relationship 1afe622d-b521-4ec4-a478-f00cd045fae9
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Calendar.'End of Month'
+	toColumn: LocalDateTable_2ed02f4d-dc09-4887-bb8d-0fca66971688.Date
+

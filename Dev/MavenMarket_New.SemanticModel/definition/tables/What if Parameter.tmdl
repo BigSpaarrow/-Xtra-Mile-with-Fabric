@@ -1,0 +1,26 @@
+table 'What if Parameter'
+	lineageTag: e2c53f76-7b4a-4ab5-b364-7d2c377da75f
+
+	measure 'What if Parameter Value' = SELECTEDVALUE('What if Parameter'[What if Parameter], 1)
+		formatString: 0
+		lineageTag: 74e274a1-fff1-4012-874e-54a854867d3f
+
+	column 'What if Parameter'
+		formatString: 0
+		lineageTag: b2c762ae-9b05-443c-b9da-ccebd3bccd5b
+		summarizeBy: none
+		sourceColumn: [Value]
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 0
+				}
+
+		annotation SummarizationSetBy = User
+
+	partition 'What if Parameter' = calculated
+		mode: import
+		source = GENERATESERIES(0, 20, 1)
+
+	annotation PBI_Id = d77d048a4dde4e3a80117a040b621825
+

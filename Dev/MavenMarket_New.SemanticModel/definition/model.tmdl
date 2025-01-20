@@ -1,0 +1,33 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-GB
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation PBI_QueryOrder = ["Calendar","Customers","Products","Regions","Returns","Stores","Transactions","Measures Table","MetricSelector"]
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBIDesktopVersion = 2.124.1554.0 (23.12)
+
+ref table Calendar
+ref table DateTableTemplate_53d57380-1a57-4685-82dc-2f78e089a3c0
+ref table LocalDateTable_5e7a5515-4b80-44e5-9111-5fd1a8750ac6
+ref table Customers
+ref table LocalDateTable_4e0d43ec-2eec-427f-a85a-8fd9d1c2376c
+ref table Products
+ref table Regions
+ref table Returns
+ref table Stores
+ref table Transactions
+ref table LocalDateTable_cd3e2cce-a9f7-406f-8fdb-0cd4752c8056
+ref table LocalDateTable_b77b2409-183c-4664-bd89-d9c2e09ca384
+ref table LocalDateTable_2ed02f4d-dc09-4887-bb8d-0fca66971688
+ref table 'Measures Table'
+ref table 'What if Parameter'
+ref table MetricSelector
+
+ref cultureInfo en-US
+

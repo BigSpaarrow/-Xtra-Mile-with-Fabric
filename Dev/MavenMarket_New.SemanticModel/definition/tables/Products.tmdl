@@ -1,0 +1,122 @@
+table Products
+	lineageTag: 9baf67b4-c868-4db7-a98d-1a48b36f2c3a
+
+	column product_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 1c928d4b-1c7d-49d0-9e8c-71517a04a694
+		summarizeBy: none
+		sourceColumn: product_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_brand
+		dataType: string
+		lineageTag: aeecc5d6-111c-4f1e-8b85-fbde98de28b2
+		summarizeBy: none
+		sourceColumn: product_brand
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_name
+		dataType: string
+		lineageTag: 76b399cb-2c6f-4134-8976-52da15614be4
+		summarizeBy: none
+		sourceColumn: product_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_sku
+		dataType: string
+		lineageTag: e32849d3-bc62-40a2-9392-ad5c0ed4de5d
+		summarizeBy: none
+		sourceColumn: product_sku
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_retail_price
+		dataType: double
+		formatString: "£"#,0.00;-"£"#,0.00;"£"#,0.00
+		lineageTag: b74d9cf4-67be-4cba-98b7-22722be11719
+		summarizeBy: sum
+		sourceColumn: product_retail_price
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-GB"}
+
+	column product_cost
+		dataType: double
+		formatString: "£"#,0.00;-"£"#,0.00;"£"#,0.00
+		lineageTag: 32f701ef-800c-4a18-863f-6201622e9a79
+		summarizeBy: sum
+		sourceColumn: product_cost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-GB"}
+
+	column product_weight
+		dataType: string
+		lineageTag: 902adf82-3ce1-42ab-b588-5f26716643f0
+		summarizeBy: none
+		sourceColumn: product_weight
+
+		annotation SummarizationSetBy = Automatic
+
+	column recyclable
+		dataType: string
+		lineageTag: 2b402bd5-f7b7-445b-8fea-6fadf280c8a1
+		summarizeBy: none
+		sourceColumn: recyclable
+
+		annotation SummarizationSetBy = Automatic
+
+	column low_fat
+		dataType: string
+		lineageTag: c42dc6fc-8510-42df-88e7-8b5762f83da6
+		summarizeBy: none
+		sourceColumn: low_fat
+
+		annotation SummarizationSetBy = Automatic
+
+	column discount_price
+		dataType: decimal
+		formatString: "£"#,0.00;-"£"#,0.00;"£"#,0.00
+		lineageTag: 8d94e6fa-5335-4894-a29f-8ffc62b4197b
+		summarizeBy: sum
+		sourceColumn: discount_price
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-GB"}
+
+	column Price_Tier = IF(Products[product_retail_price] > 3, "High", IF(Products[product_retail_price] > 1, "Mid", "Low"))
+		lineageTag: a5432a4c-5ed0-47fe-81c0-f4c3b5b971eb
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Products = m
+		mode: import
+		source =
+				let
+				    Source = PowerPlatform.Dataflows(null),
+				    Workspaces = Source{[Id="Workspaces"]}[Data],
+				    #"2fdbc029-4dea-496a-a0bc-c32c1f4c2d24" = Workspaces{[workspaceId="2fdbc029-4dea-496a-a0bc-c32c1f4c2d24"]}[Data],
+				    #"142eaa63-2e54-43a9-aac7-d21e5341fcd7" = #"2fdbc029-4dea-496a-a0bc-c32c1f4c2d24"{[dataflowId="142eaa63-2e54-43a9-aac7-d21e5341fcd7"]}[Data],
+				    MavenMarket_Products_ = #"142eaa63-2e54-43a9-aac7-d21e5341fcd7"{[entity="MavenMarket_Products",version=""]}[Data],
+				    #"Changed Type" = Table.TransformColumnTypes(MavenMarket_Products_,{{"product_id", Int64.Type}, {"product_retail_price", type number}, {"product_cost", type number}}),
+				    #"Duplicated Column" = Table.DuplicateColumn(#"Changed Type", "product_retail_price", "product_retail_price - Copy"),
+				    #"Removed Columns" = Table.RemoveColumns(#"Duplicated Column",{"product_retail_price - Copy"}),
+				    #"Added Custom" = Table.AddColumn(#"Removed Columns", "discount_price", each [product_retail_price] * 0.90),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Added Custom",{{"discount_price", Currency.Type}}),
+				    #"Replaced Value" = Table.ReplaceValue(#"Changed Type1","","0",Replacer.ReplaceValue,{"recyclable"}),
+				    #"Filtered Rows" = Table.SelectRows(#"Replaced Value", each true),
+				    #"Replaced Value1" = Table.ReplaceValue(#"Filtered Rows","","0",Replacer.ReplaceValue,{"low_fat"}),
+				    #"Filtered Rows1" = Table.SelectRows(#"Replaced Value1", each true)
+				in
+				    #"Filtered Rows1"
+
+	annotation PBI_ResultType = Table
+

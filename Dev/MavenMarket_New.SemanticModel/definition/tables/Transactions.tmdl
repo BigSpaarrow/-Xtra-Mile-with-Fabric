@@ -1,0 +1,82 @@
+table Transactions
+	lineageTag: 8807fe1c-4839-4891-8414-d171af046ec4
+
+	column transaction_date
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 1f8b9e1f-8561-438b-ab55-50510028ea94
+		summarizeBy: none
+		sourceColumn: transaction_date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column stock_date
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 738e056a-6c49-4390-8402-6197c9f5c7db
+		summarizeBy: none
+		sourceColumn: stock_date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column product_id
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 4efc3288-dd99-40b4-af6b-23f62d907a8b
+		summarizeBy: none
+		sourceColumn: product_id
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_id
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: c0a320ac-5a5f-486f-b99e-255b8b0b6ca8
+		summarizeBy: none
+		sourceColumn: customer_id
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column store_id
+		dataType: int64
+		formatString: 0
+		lineageTag: f6ee741b-6a8b-40ef-bbfd-eee8529df32d
+		summarizeBy: none
+		sourceColumn: store_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column quantity
+		dataType: int64
+		formatString: 0
+		lineageTag: d337a60f-051d-4be8-8156-4762c1e3ea04
+		summarizeBy: sum
+		sourceColumn: quantity
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Transactions = m
+		mode: import
+		source =
+				let
+				    Source = PowerPlatform.Dataflows(null),
+				    Workspaces = Source{[Id="Workspaces"]}[Data],
+				    #"2fdbc029-4dea-496a-a0bc-c32c1f4c2d24" = Workspaces{[workspaceId="2fdbc029-4dea-496a-a0bc-c32c1f4c2d24"]}[Data],
+				    #"142eaa63-2e54-43a9-aac7-d21e5341fcd7" = #"2fdbc029-4dea-496a-a0bc-c32c1f4c2d24"{[dataflowId="142eaa63-2e54-43a9-aac7-d21e5341fcd7"]}[Data],
+				    MavenMarket_Transactions_ = #"142eaa63-2e54-43a9-aac7-d21e5341fcd7"{[entity="MavenMarket_Transactions",version=""]}[Data],
+				    #"Changed Type" = Table.TransformColumnTypes(MavenMarket_Transactions_,{{"product_id", Int64.Type}, {"customer_id", Int64.Type}, {"store_id", Int64.Type}, {"quantity", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

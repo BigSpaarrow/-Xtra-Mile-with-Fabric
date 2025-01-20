@@ -1,0 +1,190 @@
+table 'Measures Table'
+	lineageTag: 03cadb31-4352-4f7c-ba61-992bd9796e15
+
+	measure 'Quantity Sold' = SUM(Transactions[quantity])
+		formatString: #,0
+		lineageTag: 761d92a0-5c66-4feb-b67b-dfe078150c09
+
+	measure 'Quantity Returned' = SUM(Returns[quantity])
+		formatString: #,0
+		lineageTag: dd0f7551-5305-48d7-9414-ab3234a2ee06
+
+	measure 'Total Transactions' = COUNTROWS(Transactions)
+		formatString: #,0
+		lineageTag: b0c795f2-3c0f-449c-be39-a657db09f032
+
+	measure 'Total Returns' = COUNTROWS(Returns)
+		formatString: #,0
+		lineageTag: 87a96515-166b-4f3b-b9ff-4f6b91fe8e84
+
+	measure 'Return Rate' = DIVIDE([Quantity Returned] , [Quantity Sold], 0)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 68e9969b-be3d-40b9-ac48-7f5468dc89cd
+
+	measure 'Weekend Transactions' = CALCULATE(COUNTROWS(Transactions), 'Calendar'[Weekend] = "Y")
+		formatString: #,0
+		lineageTag: ab2536ea-75d7-4945-84b6-b55067d0752b
+
+	measure 'Weekend Transactions 1' =
+			
+			CALCULATE(
+			    COUNTROWS(Transactions),
+			    WEEKDAY(Transactions[transaction_date], 2) > 5
+			)
+		formatString: 0
+		lineageTag: a4b3bfea-b04f-4291-8469-7b2285a23ed9
+
+	measure '% Weekend Transactions' = DIVIDE([Weekend Transactions], [Total Transactions])
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 1f0b3ae7-ef75-4869-9950-310396f34667
+
+	measure 'All Transactions' = CALCULATE(COUNTROWS(Transactions), ALL(Transactions))
+		lineageTag: 6b738b02-c8f4-4fd1-a683-78b99e42d335
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'All Returns' = CALCULATE(COUNTROWS(Returns), ALL(Returns))
+		lineageTag: 2b64cb53-af7a-4acc-9761-fbfa66052bf2
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Revenue' = SUMX(Transactions, Transactions[quantity] * RELATED(Products[product_retail_price]))
+		formatString: "£"#,0;-"£"#,0;"£"#,0
+		lineageTag: b9af4c57-5a9c-47da-847d-e0d49ff3d92e
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-GB"}
+
+	measure 'Total Cost' = SUMX(Transactions, Transactions[quantity] * RELATED(Products[product_cost]))
+		formatString: "£"#,0;-"£"#,0;"£"#,0
+		lineageTag: 6df8a5eb-6a69-4b68-9960-634d45dd2e80
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-GB"}
+
+	measure 'Total Profit' = [Total Revenue] - [Total Cost]
+		formatString: "£"#,0;-"£"#,0;"£"#,0
+		lineageTag: 94685fbe-f25e-4218-b400-c398009418a4
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-GB"}
+
+	measure 'Profit Margin' = DIVIDE([Total Profit], [Total Revenue])
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 9f455d1b-abd4-4ca9-a346-817a4f253cc6
+
+	measure 'Unique Products' = DISTINCTCOUNT(Products[product_name])
+		formatString: #,0
+		lineageTag: e814c4fc-7624-4fbc-bb7b-aacf0e504350
+
+	measure 'YTD Revenue' = CALCULATE([Total Revenue], DATESYTD('Calendar'[date]))
+		formatString: "£"#,0;-"£"#,0;"£"#,0
+		lineageTag: 0f57b945-3059-4284-9e8d-595c2a04a5fb
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-GB"}
+
+	measure '60-Day Revenue' = ```
+			CALCULATE([Total Revenue], 
+			                            DATESINPERIOD(
+			                                'Calendar'[date], 
+			                                MAX('Calendar'[date]) , 
+			                                -60, 
+			                                DAY))
+			```
+		formatString: "£"#,0;-"£"#,0;"£"#,0
+		lineageTag: bbfabdc5-0bc7-4dc2-a19e-7bc462f1fc46
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-GB"}
+
+	measure 'Last Month Transactions' =
+			CALCULATE(
+			                            COUNTROWS(Transactions),
+			                            DATEADD('Calendar'[date], -1, MONTH))
+		formatString: #,0
+		lineageTag: 5e129f35-9738-43f3-8846-1f4c7bc63df1
+
+	measure 'Last Month Revenue' =
+			CALCULATE(
+			                        [Total Revenue],
+			                        DATEADD(
+			                            'Calendar'[date],
+			                            -1, MONTH))
+		formatString: #,0
+		lineageTag: 09652dd9-5243-4a7e-82d0-08aae02766b1
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	measure 'Last Month Profit' =
+			CALCULATE(
+			                    [Total Profit],
+			                    DATEADD('Calendar'[date],
+			                    -1, MONTH))
+		formatString: #,0
+		lineageTag: 0eea6f4a-a58f-41a4-a35b-a485da65e7ca
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	measure 'Last Month Returns' =
+			CALCULATE(
+			    [Total Returns],
+			    DATEADD('Calendar'[date],
+			    -1, MONTH))
+		formatString: #,0
+		lineageTag: 2acb03cb-f2e0-4b0b-82e9-49e93bc4c623
+
+	measure 'Revenue Target' = [Last Month Revenue] * 1.05
+		formatString: "£"#,0.00;-"£"#,0.00;"£"#,0.00
+		lineageTag: 621a6858-a067-4b3b-8538-12f26b2f88fb
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-GB"}
+
+	measure 'Current Month Returns' =
+			CALCULATE(
+			    [Total Returns],
+			    DATEADD('Calendar'[date],
+			    0, MONTH))
+		formatString: 0
+		lineageTag: f62817f4-00a2-4d8a-bfcd-eba2b364376b
+
+	measure DynamicTitle = "Sales Data for " & SELECTEDVALUE(Regions[sales_region], "All Regions")
+		lineageTag: eca7b9fb-de04-40a2-a6a8-f8b45f1be641
+
+	measure 'Adjusted Profit' = (([Total Profit]) * [What if Parameter Value])
+		lineageTag: 5546620e-a35b-441b-9ba7-8113e1a7e2d6
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Adjusted Revenue' = (([Total Revenue]) * [What if Parameter Value])
+		lineageTag: 8d824397-4808-4daa-8479-379cd2e1628a
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure SelectedMetric =
+			
+			SWITCH(
+			    SELECTEDVALUE(MetricSelector[Metrics]),
+			    "Total Cost", ([Total Cost]),
+			    "Total Profit", ([Total Profit]),
+			    "Total Returns", ([Total Returns]),
+			    "Total Revenue", ([Total Revenue]),
+			    "Total Transactions", ([Total Transactions]),
+			    BLANK()  -- Default if no selection is made
+			)
+		lineageTag: bdea9681-5c80-40e5-ac73-e3e84ad2955f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Adjusted Cost' = (([Total Cost]) * [What if Parameter Value])
+		lineageTag: 67c25f2c-310f-4751-b51e-ec6f672923c0
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition 'Measures Table' = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column1"})
+				in
+				    #"Removed Columns"
+
+	annotation PBI_ResultType = Table
+

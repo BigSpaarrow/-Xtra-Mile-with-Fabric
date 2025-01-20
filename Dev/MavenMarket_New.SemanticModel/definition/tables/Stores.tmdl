@@ -1,0 +1,157 @@
+table Stores
+	lineageTag: 46e823a9-14d5-4a31-b1ba-5e4a312a840f
+
+	column store_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 14816c0f-5ddd-4d57-8dd4-f1be910fa804
+		summarizeBy: none
+		sourceColumn: store_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column region_id
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: e0ae9fb8-ff55-47e2-99bf-206d33e6a908
+		summarizeBy: none
+		sourceColumn: region_id
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column store_type
+		dataType: string
+		lineageTag: cbb1ba05-0b42-4ff6-ae6b-75a0439a7158
+		summarizeBy: none
+		sourceColumn: store_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column store_name
+		dataType: string
+		lineageTag: 1b679211-8d34-4fa8-8b5e-d729686471fc
+		summarizeBy: none
+		sourceColumn: store_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column store_street_address
+		dataType: string
+		lineageTag: ee8bb1c1-0ec1-46fb-9f84-1d5d794c1fce
+		summarizeBy: none
+		sourceColumn: store_street_address
+
+		annotation SummarizationSetBy = Automatic
+
+	column store_city
+		dataType: string
+		lineageTag: eb48e3c5-6050-40b8-b582-f45c08f0aba3
+		dataCategory: City
+		summarizeBy: none
+		sourceColumn: store_city
+
+		annotation SummarizationSetBy = Automatic
+
+	column store_state
+		dataType: string
+		lineageTag: 9356c3de-5ab5-44ea-9c08-7d2fff29b7ec
+		dataCategory: StateOrProvince
+		summarizeBy: none
+		sourceColumn: store_state
+
+		annotation SummarizationSetBy = Automatic
+
+	column store_country
+		dataType: string
+		lineageTag: 13333b39-2b18-4014-996a-19f9e11d3672
+		dataCategory: County
+		summarizeBy: none
+		sourceColumn: store_country
+
+		annotation SummarizationSetBy = Automatic
+
+	column store_phone
+		dataType: string
+		lineageTag: 2cf72f76-28be-427c-9661-f214ba77d026
+		summarizeBy: none
+		sourceColumn: store_phone
+
+		annotation SummarizationSetBy = Automatic
+
+	column first_opened_date
+		dataType: string
+		lineageTag: d59d85bf-e982-4523-876f-9fd3d7c9a029
+		summarizeBy: none
+		sourceColumn: first_opened_date
+
+		annotation SummarizationSetBy = Automatic
+
+	column last_remodel_date
+		dataType: string
+		lineageTag: ba5f61c2-e164-4526-b8ab-2019a0297bce
+		summarizeBy: none
+		sourceColumn: last_remodel_date
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_sqft
+		dataType: string
+		lineageTag: 1dfb6bef-3c94-438f-a752-01e4f4f07b07
+		summarizeBy: none
+		sourceColumn: total_sqft
+
+		annotation SummarizationSetBy = Automatic
+
+	column grocery_sqft
+		dataType: string
+		lineageTag: 13032572-253f-408e-b7c8-78cd4d5ffbc5
+		summarizeBy: none
+		sourceColumn: grocery_sqft
+
+		annotation SummarizationSetBy = Automatic
+
+	column full_address
+		dataType: string
+		lineageTag: e68aaea1-66a7-458d-8ce5-f698a45c81a5
+		dataCategory: Address
+		summarizeBy: none
+		sourceColumn: full_address
+
+		annotation SummarizationSetBy = Automatic
+
+	column area_code
+		dataType: string
+		lineageTag: 77d2d29e-73b7-454e-853a-dd41ed2ed375
+		summarizeBy: none
+		sourceColumn: area_code
+
+		annotation SummarizationSetBy = Automatic
+
+	column Years_Since_Remodel = DATEDIFF(Stores[last_remodel_date], TODAY(), YEAR)
+		formatString: 0
+		lineageTag: cb0c0923-ea8d-4f4c-8668-864489768ee1
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Stores = m
+		mode: import
+		source =
+				let
+				    Source = PowerPlatform.Dataflows(null),
+				    Workspaces = Source{[Id="Workspaces"]}[Data],
+				    #"2fdbc029-4dea-496a-a0bc-c32c1f4c2d24" = Workspaces{[workspaceId="2fdbc029-4dea-496a-a0bc-c32c1f4c2d24"]}[Data],
+				    #"142eaa63-2e54-43a9-aac7-d21e5341fcd7" = #"2fdbc029-4dea-496a-a0bc-c32c1f4c2d24"{[dataflowId="142eaa63-2e54-43a9-aac7-d21e5341fcd7"]}[Data],
+				    MavenMarket_Stores_ = #"142eaa63-2e54-43a9-aac7-d21e5341fcd7"{[entity="MavenMarket_Stores",version=""]}[Data],
+				    #"Changed Type" = Table.TransformColumnTypes(MavenMarket_Stores_,{{"store_id", Int64.Type}, {"region_id", Int64.Type}}),
+				    #"Inserted Merged Column" = Table.AddColumn(#"Changed Type", "full_address", each Text.Combine({[store_city], [store_state], [store_country]}, " "), type text),
+				    #"Inserted Text After Delimiter" = Table.AddColumn(#"Inserted Merged Column", "Text After Delimiter", each Text.AfterDelimiter([store_phone], "-", 1), type text),
+				    #"Renamed Columns" = Table.RenameColumns(#"Inserted Text After Delimiter",{{"Text After Delimiter", "area_code"}})
+				in
+				    #"Renamed Columns"
+
+	annotation PBI_ResultType = Table
+

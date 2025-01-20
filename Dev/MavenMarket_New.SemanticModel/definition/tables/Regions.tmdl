@@ -1,0 +1,43 @@
+table Regions
+	lineageTag: 5fddda2f-4993-4d04-b7c5-b46bedc34bc2
+
+	column region_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 1fd8cd48-a484-44fe-ad39-20dabdb1bea2
+		summarizeBy: none
+		sourceColumn: region_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column sales_district
+		dataType: string
+		lineageTag: cee25d44-1896-4882-9d4e-04a2c3bf7f8e
+		summarizeBy: none
+		sourceColumn: sales_district
+
+		annotation SummarizationSetBy = Automatic
+
+	column sales_region
+		dataType: string
+		lineageTag: 3c6e51fc-f840-4ce8-a070-6aeed2835169
+		summarizeBy: none
+		sourceColumn: sales_region
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Regions = m
+		mode: import
+		source =
+				let
+				    Source = PowerPlatform.Dataflows(null),
+				    Workspaces = Source{[Id="Workspaces"]}[Data],
+				    #"2fdbc029-4dea-496a-a0bc-c32c1f4c2d24" = Workspaces{[workspaceId="2fdbc029-4dea-496a-a0bc-c32c1f4c2d24"]}[Data],
+				    #"142eaa63-2e54-43a9-aac7-d21e5341fcd7" = #"2fdbc029-4dea-496a-a0bc-c32c1f4c2d24"{[dataflowId="142eaa63-2e54-43a9-aac7-d21e5341fcd7"]}[Data],
+				    MavenMarket_Regions_ = #"142eaa63-2e54-43a9-aac7-d21e5341fcd7"{[entity="MavenMarket_Regions",version=""]}[Data],
+				    #"Changed Type" = Table.TransformColumnTypes(MavenMarket_Regions_,{{"region_id", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

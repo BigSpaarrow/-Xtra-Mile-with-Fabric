@@ -1,0 +1,22 @@
+table MetricSelector
+	lineageTag: b98b4a0f-03a9-4aad-b238-c1121c08864b
+
+	column Metrics
+		dataType: string
+		lineageTag: 004f9baa-7012-42f8-9e47-5171b0d3fe66
+		summarizeBy: none
+		sourceColumn: Metrics
+
+		annotation SummarizationSetBy = Automatic
+
+	partition MetricSelector = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i45WCskvScxRCEotS80rTVWK1YGJBBTlp2WWIAk45xcjc4NSS0qL8oqRREKKEvOKE5NLMvNBwrEA", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Metrics = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Metrics", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+
